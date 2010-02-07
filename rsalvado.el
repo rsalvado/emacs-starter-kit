@@ -1,11 +1,13 @@
 ;; -*-Emacs-Lisp-*-
 (server-start)
 
-;; This file is designed to be re-evaled; use the variable first-time
-;; to avoid any problems with this.
-(defvar first-time t
-  "Flag signifying this is the first time that .emacs has been evaled")
-(setq inhibit-startup-message t)
+(add-to-list 'load-path (concat dotfiles-dir "/vendor"))
+
+;; ;; This file is designed to be re-evaled; use the variable first-time
+;; ;; to avoid any problems with this.
+;; (defvar first-time t
+;;   "Flag signifying this is the first time that .emacs has been evaled")
+;; (setq inhibit-startup-message t)
 
 (prefer-coding-system 'utf-8)
 
@@ -13,10 +15,10 @@
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
 (setq auto-save-default         nil) ; Don't want any auto saving 
 
-;; Remove menu and scroll
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(toggle-scroll-bar -1)
+;; ;; Remove menu and scroll
+;; (menu-bar-mode -1)
+;; (tool-bar-mode -1)
+;; (toggle-scroll-bar -1)
 
 ;; Always use spaces to indent
 (setq-default indent-tabs-mode nil)
@@ -44,45 +46,36 @@
 (define-key global-map [\M-f2] 'next-error)
 (define-key global-map [\M-f3] 'previous-error)
 
-;; F keys
-;;(define-key global-map [f1] (switch-to-buffer "*scratch*"))
-(require 'term)
-(defun visit-ansi-term ()
-  "If the current buffer is:
-     1) a running ansi-term named *ansi-term*, rename it.
-     2) a stopped ansi-term, kill it and create a new one.
-     3) a non ansi-term, go to an already running ansi-term
-        or start a new one while killing a defunt one"
-  (interactive)
-  (let ((is-term (string= "term-mode" major-mode))
-        (is-running (term-check-proc (buffer-name)))
-        (term-cmd "/bin/bash")
-        (anon-term (get-buffer "*ansi-term*")))
-    (if is-term
-        (if is-running
-            (if (string= "*ansi-term*" (buffer-name))
-                (call-interactively 'rename-buffer)
-              (if anon-term
-                  (switch-to-buffer "*ansi-term*")
-                (ansi-term term-cmd)))
-          (kill-buffer (buffer-name))
-          (ansi-term term-cmd))
-      (if anon-term
-          (if (term-check-proc "*ansi-term*")
-              (switch-to-buffer "*ansi-term*")
-            (kill-buffer "*ansi-term*")
-            (ansi-term term-cmd))
-        (ansi-term term-cmd)))))
-(global-set-key (kbd "<f2>") 'visit-ansi-term)
-
-;; enable skeleton-pair insert globally
-;;(setq skeleton-pair t)
-;;(setq skeleton-pair-on-word t) ; apply skeleton trick even in front of a word.
-;;(global-set-key (kbd "(")  'skeleton-pair-insert-maybe)
-;;(global-set-key (kbd "[")  'skeleton-pair-insert-maybe)
-;;(global-set-key (kbd "{")  'skeleton-pair-insert-maybe)
-;;(global-set-key (kbd "\"") 'skeleton-pair-insert-maybe)
-;;(global-set-key (kbd "\'") 'skeleton-pair-insert-maybe)
+;; ;; F keys
+;; ;;(define-key global-map [f1] (switch-to-buffer "*scratch*"))
+;; (require 'term)
+;; (defun visit-ansi-term ()
+;;   "If the current buffer is:
+;;      1) a running ansi-term named *ansi-term*, rename it.
+;;      2) a stopped ansi-term, kill it and create a new one.
+;;      3) a non ansi-term, go to an already running ansi-term
+;;         or start a new one while killing a defunt one"
+;;   (interactive)
+;;   (let ((is-term (string= "term-mode" major-mode))
+;;         (is-running (term-check-proc (buffer-name)))
+;;         (term-cmd "/bin/bash")
+;;         (anon-term (get-buffer "*ansi-term*")))
+;;     (if is-term
+;;         (if is-running
+;;             (if (string= "*ansi-term*" (buffer-name))
+;;                 (call-interactively 'rename-buffer)
+;;               (if anon-term
+;;                   (switch-to-buffer "*ansi-term*")
+;;                 (ansi-term term-cmd)))
+;;           (kill-buffer (buffer-name))
+;;           (ansi-term term-cmd))
+;;       (if anon-term
+;;           (if (term-check-proc "*ansi-term*")
+;;               (switch-to-buffer "*ansi-term*")
+;;             (kill-buffer "*ansi-term*")
+;;             (ansi-term term-cmd))
+;;         (ansi-term term-cmd)))))
+;; (global-set-key (kbd "<f2>") 'visit-ansi-term)
 
 ;; source: http://steve.yegge.googlepages.com/my-dot-emacs-file
 (defun rename-file-and-buffer (new-name)
@@ -181,10 +174,27 @@ argument is given, you can choose which register to jump to."
 (global-set-key (kbd "C-x ¡")
                 'th-jump-to-register)
 
-;; Add color to a shell running in emacs 'M-x shell'
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; ;; Add color to a shell running in emacs 'M-x shell'
+;; (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-(put 'set-goal-column 'disabled t)
+;; (put 'set-goal-column 'disabled t)
 
-(put 'narrow-to-region 'disabled nil)
+;; (put 'narrow-to-region 'disabled nil)
+
+;; ruby-mode
+(add-hook 'ruby-mode-hook
+          (function (lambda ()
+                      (flymake-mode)
+                      (linum-mode)
+                      (ruby-electric-mode)
+                      )))
+
+;; Color Themes
+(add-to-list 'load-path (concat dotfiles-dir "/vendor/color-theme"))
+(require 'color-theme)
+(color-theme-initialize)
+
+;; Activate theme
+;; (load (concat dotfiles-dir "rsalvado-theme.el"))
+(color-theme-arjen)
