@@ -1,5 +1,4 @@
 ;; -*-Emacs-Lisp-*-
-(server-start)
 
 (add-to-list 'load-path (concat dotfiles-dir "/vendor"))
 
@@ -196,5 +195,6 @@ argument is given, you can choose which register to jump to."
 (color-theme-initialize)
 
 ;; Activate theme
-;; (load (concat dotfiles-dir "rsalvado-theme.el"))
 (color-theme-arjen)
+
+(server-start)
