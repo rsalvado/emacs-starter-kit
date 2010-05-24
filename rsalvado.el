@@ -194,6 +194,9 @@ argument is given, you can choose which register to jump to."
 (require 'color-theme)
 (color-theme-initialize)
 
+;; Rinari
+(setq rinari-tags-file-name "TAGS")
+
 ;; Activate theme
 (color-theme-arjen)
 
