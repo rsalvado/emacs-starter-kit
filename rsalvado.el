@@ -12,7 +12,7 @@
 
 (setq make-backup-files         nil) ; Don't want any backup files
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
-(setq auto-save-default         nil) ; Don't want any auto saving 
+(setq auto-save-default         nil) ; Don't want any auto saving
 
 ;; ;; Remove menu and scroll
 ;; (menu-bar-mode -1)
@@ -154,7 +154,7 @@
   "Stores the current frame configuration in register
 'th-frame-config-register'. If a prefix argument is given, you
 can choose which register to use."
-(interactive "p")  
+(interactive "p")
 (let ((register 100))
     (frame-configuration-to-register register)
     (delete-other-windows)
@@ -163,7 +163,7 @@ can choose which register to use."
 (defun th-jump-to-register (arg)
   "Jumps to register 'th-frame-config-register'. If a prefix
 argument is given, you can choose which register to jump to."
-  (interactive "p")  
+  (interactive "p")
   (let ((register 100))
     (jump-to-register register)
     (message "Frame restored.")))
@@ -181,12 +181,21 @@ argument is given, you can choose which register to jump to."
 
 ;; (put 'narrow-to-region 'disabled nil)
 
+;; Comments
+(defadvice comment-or-uncomment-region (before slick-comment activate compile)
+  "When called interactively with no active region, comment a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+	   (line-beginning-position 2)))))
+
 ;; ruby-mode
 (add-hook 'ruby-mode-hook
           (function (lambda ()
                       (flymake-mode)
                       (linum-mode)
                       (ruby-electric-mode)
+                      (define-key ruby-mode-map "\C-c#" 'comment-or-uncomment-region)
                       )))
 
 ;; Color Themes
@@ -197,7 +206,34 @@ argument is given, you can choose which register to jump to."
 ;; Rinari
 (setq rinari-tags-file-name "TAGS")
 
+;; Ido rocks
+(setq ido-confirm-unique-completion t)
+(setq ido-default-buffer-method 'samewindow)
+(setq ido-use-filename-at-point t)
+(setq ido-enable-flex-matching t)
+(ido-mode t)
+(ido-everywhere t)
+(set-face-background 'ido-first-match "red")
+(set-face-foreground 'ido-subdir "blue3")
+(icomplete-mode 1)
+
+;; Trailing whitespaces hate
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; Activate theme
 (color-theme-arjen)
+
+;; line highlight
+;; To customize the background color
+(global-hl-line-mode 1)
+(set-face-background 'hl-line "#330")  ;; Emacs 22 Only
+
+;; Full screen
+(defun fullscreen (&optional f)
+  (interactive)
+  (set-frame-parameter f 'fullscreen
+                       (if (frame-parameter f 'fullscreen) nil 'fullboth)))
+(global-set-key [f11] 'fullscreen)
+(add-hook 'after-make-frame-functions 'fullscreen)
 
 (server-start)
