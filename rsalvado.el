@@ -221,7 +221,7 @@ argument is given, you can choose which register to jump to."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Activate theme
-(color-theme-arjen)
+(color-theme-zenburn)
 
 ;; line highlight
 ;; To customize the background color
